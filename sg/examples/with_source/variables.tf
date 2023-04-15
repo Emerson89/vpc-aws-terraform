@@ -13,13 +13,13 @@ variable "environment" {
 variable "sgname" {
   description = "Name to be used the resources as identifier"
   type        = string
-  default = "sg-teste"
+  default     = "sg-teste"
 }
 
 variable "tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(any)
-  default     = {
+  default = {
     Environment = "hml"
   }
 }

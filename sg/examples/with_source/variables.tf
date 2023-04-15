@@ -1,15 +1,3 @@
-variable "ingress" {
-  description = "Ingress rules security group"
-  type        = map(any)
-  default     = {
-     "ingress_rule_1" = {
-      "from_port" = "443"
-      "to_port"   = "443"
-      "protocol"  = "tcp"
-    },
-  }
-}
-
 variable "description" {
   description = "Description of security group"
   type        = string

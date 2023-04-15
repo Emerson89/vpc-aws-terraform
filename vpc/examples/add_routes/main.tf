@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/Emerson89/modules-terraform.git//vpc?ref=main"
+  source = "github.com/Emerson89/terraform-modules.git//vpc?ref=main"
 
   name                 = var.name
   cidr_block           = var.cidr_block

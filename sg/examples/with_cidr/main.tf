@@ -1,5 +1,5 @@
 module "sg" {
- source = "github.com/Emerson89/modules-terraform.git//sg?ref=main"
+ source = "github.com/Emerson89/terraform-modules.git//sg?ref=main"
  sgname      = var.sgname
  environment = var.environment
  description = var.description
@@ -7,5 +7,5 @@ module "sg" {
 
  tags = var.tags
 
- ingress_with_cidr_blocks = var.ingress
+ ingress_with_cidr_blocks = local.ingress
 }

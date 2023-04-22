@@ -17,6 +17,19 @@ module "vpc" {
   tags        = local.tags
   environment = local.environment
 
+  private_subnets_tags = {
+
+    "kubernetes.io/cluster/develop" = "shared",
+    "kubernetes.io/role/internal-elb"           = 1
+    "kubernetes.io/role/elb"                    = 1
+  }
+  public_subnets_tags = {
+
+    "kubernetes.io/cluster/develop" = "shared",
+    "kubernetes.io/role/internal-elb"           = 1
+    "kubernetes.io/role/elb"                    = 1
+  }
+
   private_subnets         = var.private_subnets
   public_subnets          = var.public_subnets
   map_public_ip_on_launch = var.map_public_ip_on_launch

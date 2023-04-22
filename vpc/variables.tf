@@ -1,3 +1,35 @@
+variable "name" {
+  description = "Name to be used on all the resources as identifier"
+  type        = string
+}
+
+variable "cidr_block" {
+  description = " The IPv4 CIDR block for the VPC."
+  type        = string
+}
+
+
+#variables igw
+
+variable "igwname" {
+  description = "Name to be used the resources as identifier"
+  type        = string
+}
+
+#variables nat
+variable "natname" {
+  description = "Name to be used the resources as identifier"
+  type        = string
+
+}
+
+## routes
+variable "rtname" {
+  description = "Name to be used the resources as identifier"
+  type        = string
+
+}
+
 variable "route_table_routes_private" {
   type    = map(any)
   default = {}
@@ -10,32 +42,42 @@ variable "route_table_routes_public" {
 
 }
 
+variable "public_subnets_tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(any)
+  default     = {
+     Type     = "subnet"
+     Platform = "network"
+     Network  = "Public"
+  }
+}
+
+variable "private_subnets_tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(any)
+  default     = {
+     Type     = "subnet"
+     Platform = "network"
+     Network  = "Private"
+  }
+}
+
 variable "iam_role_arn" {
   description = "IAM role flow logs"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "log_destination_arn" {
   description = "ARN log_destination_arn"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "instance_tenancy" {
   description = "A tenancy option for instances launched into the VPC. Default is default"
   type        = string
   default     = "default"
-}
-
-variable "name" {
-  description = "Name to be used on all the resources as identifier"
-  type        = string
-}
-
-variable "cidr_block" {
-  description = " The IPv4 CIDR block for the VPC."
-  type        = string
 }
 
 variable "environment" {
@@ -78,25 +120,4 @@ variable "enable_dns_support" {
   description = "Enable dns support"
   type        = bool
   default     = true
-}
-
-#variables igw
-
-variable "igwname" {
-  description = "Name to be used the resources as identifier"
-  type        = string
-}
-
-#variables nat
-variable "natname" {
-  description = "Name to be used the resources as identifier"
-  type        = string
-
-}
-
-## routes
-variable "rtname" {
-  description = "Name to be used the resources as identifier"
-  type        = string
-
 }

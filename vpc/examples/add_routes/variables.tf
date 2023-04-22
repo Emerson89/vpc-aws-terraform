@@ -18,12 +18,6 @@ variable "cidr_block" {
   default     = "10.0.0.0/16"
 }
 
-variable "environment" {
-  description = "Env tags"
-  type        = string
-  default     = "hml"
-}
-
 variable "public_subnets" {
   description = "A list of public subnets inside the VPC"
   type        = list(string)
@@ -34,14 +28,6 @@ variable "private_subnets" {
   description = "A list of private subnets inside the VPC"
   type        = list(string)
   default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-}
-
-variable "tags" {
-  description = "A mapping of tags to assign to the resource"
-  type        = map(string)
-  default = {
-    Environment = "hml"
-  }
 }
 
 variable "map_public_ip_on_launch" {

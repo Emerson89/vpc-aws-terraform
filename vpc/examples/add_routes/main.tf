@@ -1,3 +1,9 @@
+locals {
+  environment = "develop"
+  tags = {
+    Environment = "develop"
+  }
+}
 module "vpc" {
   source = "github.com/Emerson89/terraform-modules.git//vpc?ref=main"
 
@@ -7,7 +13,8 @@ module "vpc" {
   enable_dns_support   = var.enable_dns_support
   enable_dns_hostnames = var.enable_dns_hostnames
 
-  tags = local.applied_tags
+  tags = local.tags
+  environment = local.environment
 
   private_subnets         = var.private_subnets
   public_subnets          = var.public_subnets

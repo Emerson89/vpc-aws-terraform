@@ -7,7 +7,7 @@ resource "aws_vpc" "this" {
 
   tags = merge(
     {
-      "Name"     = format("%s", var.name)
+      "Name"     = format("%s-%s", var.name, var.environment)
       "Platform" = "network"
       "Type"     = "vpc"
     },
@@ -39,11 +39,8 @@ resource "aws_subnet" "private" {
   tags = merge(
     {
       "Name"     = format("private-%s", element(data.aws_availability_zones.azs.names, count.index)),
-      "Type"     = "subnet"
-      "Platform" = "network"
-      "Network"  = "Private"
     },
-    var.tags,
+    var.private_subnets_tags,
   )
 }
 
@@ -60,11 +57,8 @@ resource "aws_subnet" "public" {
   tags = merge(
     {
       "Name"     = format("public-%s", element(data.aws_availability_zones.azs.names, count.index)),
-      "Type"     = "subnet"
-      "Platform" = "network"
-      "Network"  = "Public"
     },
-    var.tags,
+    var.public_subnets_tags,
   )
 }
 
@@ -74,7 +68,7 @@ resource "aws_internet_gateway" "this" {
 
   tags = merge(
     {
-      "Name"     = format("%s", var.igwname)
+      "Name"     = format("%s-%s", var.igwname, var.environment)
       "Platform" = "network"
       "Type"     = "IGW"
     },
@@ -90,7 +84,7 @@ resource "aws_eip" "this" {
 
   tags = merge(
     {
-      "Name"     = format("%s-elastic-ip", var.natname)
+      "Name"     = format("%s-%s-elastic-ip", var.natname, var.environment)
       "Platform" = "network"
       "Type"     = "nat"
     },
@@ -106,7 +100,7 @@ resource "aws_nat_gateway" "this" {
 
   tags = merge(
     {
-      "Name"     = format("%s", var.natname)
+      "Name"     = format("%s-%s", var.natname, var.environment)
       "Platform" = "network"
       "Type"     = "nat"
     },
@@ -138,7 +132,7 @@ resource "aws_route_table" "public" {
   }
   tags = merge(
     {
-      "Name"     = format("public-%s", var.rtname)
+      "Name"     = format("public-%s-%s", var.rtname, var.environment)
       "Platform" = "network"
       "Type"     = "route-table"
       "Network"  = "Public"
@@ -169,7 +163,7 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     {
-      "Name"     = format("private-%s", var.rtname)
+      "Name"     = format("private-%s-%s", var.rtname, var.environment)
       "Platform" = "network"
       "Type"     = "route-table"
       "Network"  = "Private"

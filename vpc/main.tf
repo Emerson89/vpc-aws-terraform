@@ -18,8 +18,10 @@ resource "aws_vpc" "this" {
 ## FLOW_LOGS
 
 resource "aws_flow_log" "this" {
-  iam_role_arn    = var.iam_role_arn
-  log_destination = var.log_destination_arn
+  count = var.create_aws_flow_log ? 1 : 0
+
+  iam_role_arn    = try(var.iam_role_arn, null)
+  log_destination = try(var.log_destination_arn, null)
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.this.id
 
@@ -39,6 +41,9 @@ resource "aws_subnet" "private" {
   tags = merge(
     {
       "Name"     = format("private-%s", element(data.aws_availability_zones.azs.names, count.index)),
+      "Type"     = "subnet"
+      "Platform" = "network"
+      "Network"  = "Private"
     },
     var.private_subnets_tags,
   )
@@ -57,6 +62,9 @@ resource "aws_subnet" "public" {
   tags = merge(
     {
       "Name"     = format("public-%s", element(data.aws_availability_zones.azs.names, count.index)),
+      "Type"     = "subnet"
+      "Platform" = "network"
+      "Network"  = "Public"
     },
     var.public_subnets_tags,
   )

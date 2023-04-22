@@ -19,15 +19,15 @@ module "vpc" {
 
   private_subnets_tags = {
 
-    "kubernetes.io/cluster/develop" = "shared",
-    "kubernetes.io/role/internal-elb"           = 1
-    "kubernetes.io/role/elb"                    = 1
+    "kubernetes.io/cluster/develop"   = "shared",
+    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/role/elb"          = 1
   }
   public_subnets_tags = {
 
-    "kubernetes.io/cluster/develop" = "shared",
-    "kubernetes.io/role/internal-elb"           = 1
-    "kubernetes.io/role/elb"                    = 1
+    "kubernetes.io/cluster/develop"   = "shared",
+    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/role/elb"          = 1
   }
 
   private_subnets         = var.private_subnets

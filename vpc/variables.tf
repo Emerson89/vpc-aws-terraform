@@ -8,6 +8,11 @@ variable "cidr_block" {
   type        = string
 }
 
+variable "create_aws_flow_log" {
+  description = "Create vpc flow log"
+  type        = bool
+  default     = false
+}
 
 #variables igw
 
@@ -45,21 +50,13 @@ variable "route_table_routes_public" {
 variable "public_subnets_tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(any)
-  default     = {
-     Type     = "subnet"
-     Platform = "network"
-     Network  = "Public"
-  }
+  default     = {}
 }
 
 variable "private_subnets_tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(any)
-  default     = {
-     Type     = "subnet"
-     Platform = "network"
-     Network  = "Private"
-  }
+  default     = {}
 }
 
 variable "iam_role_arn" {

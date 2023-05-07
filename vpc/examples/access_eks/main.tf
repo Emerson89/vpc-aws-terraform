@@ -3,6 +3,14 @@ locals {
   tags = {
     Environment = "develop"
   }
+  private_subnets_tags = {
+    "kubernetes.io/cluster/develop"   = "shared",
+    "kubernetes.io/role/internal-elb" = 1
+  }
+  public_subnets_tags = {
+    "kubernetes.io/cluster/develop" = "shared",
+    "kubernetes.io/role/elb"        = 1
+  }
 }
 
 module "vpc" {
@@ -17,18 +25,8 @@ module "vpc" {
   tags        = local.tags
   environment = local.environment
 
-  private_subnets_tags = {
-
-    "kubernetes.io/cluster/develop"   = "shared",
-    "kubernetes.io/role/internal-elb" = 1
-    "kubernetes.io/role/elb"          = 1
-  }
-  public_subnets_tags = {
-
-    "kubernetes.io/cluster/develop"   = "shared",
-    "kubernetes.io/role/internal-elb" = 1
-    "kubernetes.io/role/elb"          = 1
-  }
+  private_subnets_tags = local.private_subnets_tags
+  public_subnets_tags  = local.public_subnets_tags
 
   private_subnets         = var.private_subnets
   public_subnets          = var.public_subnets

@@ -27,13 +27,11 @@ module "vpc" {
 
   route_table_routes_private = {
     "nat" = {
-      "cidr_block"     = "0.0.0.0/0"
       "nat_gateway_id" = "${module.vpc.nat}"
     }
   }
   route_table_routes_public = {
     "igw" = {
-      "cidr_block" = "0.0.0.0/0"
       "gateway_id" = "${module.vpc.igw}"
     }
   }

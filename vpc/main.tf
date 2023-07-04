@@ -40,7 +40,7 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     {
-      "Name"     = format("private-%s", element(data.aws_availability_zones.azs.names, count.index)),
+      "Name"     = format("private-${var.environment}-%s", element(data.aws_availability_zones.azs.names, count.index)),
       "Type"     = "subnet"
       "Platform" = "network"
       "Network"  = "Private"
@@ -61,7 +61,7 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     {
-      "Name"     = format("public-%s", element(data.aws_availability_zones.azs.names, count.index)),
+      "Name"     = format("public-${var.environment}-%s", element(data.aws_availability_zones.azs.names, count.index)),
       "Type"     = "subnet"
       "Platform" = "network"
       "Network"  = "Public"
@@ -126,7 +126,7 @@ resource "aws_route_table" "public" {
   dynamic "route" {
     for_each = var.route_table_routes_public
     content {
-      cidr_block = route.value.cidr_block
+      cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)
@@ -155,7 +155,7 @@ resource "aws_route_table" "private" {
   dynamic "route" {
     for_each = var.route_table_routes_private
     content {
-      cidr_block = route.value.cidr_block
+      cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)

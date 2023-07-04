@@ -88,7 +88,7 @@ resource "aws_internet_gateway" "this" {
 ### NAT
 
 resource "aws_eip" "this" {
-  vpc = true
+  domain = "vpc"
 
   tags = merge(
     {

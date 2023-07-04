@@ -129,7 +129,7 @@ resource "aws_route_table" "public" {
       cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
-      gateway_id                = lookup(route.value, "gateway_id", null)
+      gateway_id                = lookup(route.value, "gateway_id", aws_internet_gateway.this.id)
       nat_gateway_id            = lookup(route.value, "nat_gateway_id", null)
       network_interface_id      = lookup(route.value, "network_interface_id", null)
       transit_gateway_id        = lookup(route.value, "transit_gateway_id", null)
@@ -159,7 +159,7 @@ resource "aws_route_table" "private" {
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", null)
+      nat_gateway_id            = lookup(route.value, "nat_gateway_id", aws_nat_gateway.this.id)
       network_interface_id      = lookup(route.value, "network_interface_id", null)
       transit_gateway_id        = lookup(route.value, "transit_gateway_id", null)
       vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", null)

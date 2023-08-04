@@ -25,9 +25,6 @@ module "vpc" {
   rtname  = var.rtname
 
   route_table_routes_private = {
-    "nat" = {
-      "nat_gateway_id" = "${module.vpc.nat}"
-    }
     ## add block to create route in subnet-public
     "peer" = {
       "cidr_block"                = "10.10.0.0/16"
@@ -35,9 +32,6 @@ module "vpc" {
     }
   }
   route_table_routes_public = {
-    "igw" = {
-      "gateway_id" = "${module.vpc.igw}"
-    }
     ## add block to create route in subnet-private
     "peer" = {
       "cidr_block"                = "10.10.0.0/16"

@@ -25,4 +25,15 @@ module "vpc" {
   natname = var.natname
   rtname  = var.rtname
 
+  route_table_routes_private = {
+    "nat" = {
+      "nat_gateway_id" = "${module.vpc.nat}"
+    }
+  }
+  route_table_routes_public = {
+    "igw" = {
+      "gateway_id" = "${module.vpc.igw}"
+    }
+  }
+
 }

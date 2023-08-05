@@ -1,7 +1,7 @@
 locals {
-  environment = "develop"
+  environment = "hmg"
   tags = {
-    Environment = "develop"
+    Environment = "hmg"
   }
 }
 
@@ -24,16 +24,5 @@ module "vpc" {
   igwname = var.igwname
   natname = var.natname
   rtname  = var.rtname
-
-  route_table_routes_private = {
-    "nat" = {
-      "nat_gateway_id" = "${module.vpc.nat}"
-    }
-  }
-  route_table_routes_public = {
-    "igw" = {
-      "gateway_id" = "${module.vpc.igw}"
-    }
-  }
 
 }

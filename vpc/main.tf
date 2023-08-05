@@ -1,3 +1,22 @@
+locals {
+
+  route_table_routes_private = merge(
+    {
+      "nat" = {
+        "nat_gateway_id" = "${aws_nat_gateway.this.id}"
+      }
+    },
+  var.route_table_routes_private)
+
+  route_table_routes_public = merge(
+    {
+      "igw" = {
+        "gateway_id" = "${aws_internet_gateway.this.id}"
+      }
+    },
+  var.route_table_routes_public)
+}
+
 resource "aws_vpc" "this" {
 
   cidr_block           = var.cidr_block
@@ -124,12 +143,12 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.this.id
 
   dynamic "route" {
-    for_each = var.route_table_routes_public
+    for_each = local.route_table_routes_public
     content {
       cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
-      gateway_id                = lookup(route.value, "gateway_id", aws_internet_gateway.this.id)
+      gateway_id                = lookup(route.value, "gateway_id", null)
       nat_gateway_id            = lookup(route.value, "nat_gateway_id", null)
       network_interface_id      = lookup(route.value, "network_interface_id", null)
       transit_gateway_id        = lookup(route.value, "transit_gateway_id", null)
@@ -153,13 +172,13 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
 
   dynamic "route" {
-    for_each = var.route_table_routes_private
+    for_each = local.route_table_routes_private
     content {
       cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)
-      nat_gateway_id            = lookup(route.value, "nat_gateway_id", aws_nat_gateway.this.id)
+      nat_gateway_id            = lookup(route.value, "nat_gateway_id", null)
       network_interface_id      = lookup(route.value, "network_interface_id", null)
       transit_gateway_id        = lookup(route.value, "transit_gateway_id", null)
       vpc_endpoint_id           = lookup(route.value, "vpc_endpoint_id", null)

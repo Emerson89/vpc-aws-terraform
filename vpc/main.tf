@@ -3,6 +3,7 @@ locals {
   route_table_routes_private = merge(
     {
       "nat" = {
+        "cidr_block"     = "0.0.0.0/0"
         "nat_gateway_id" = "${aws_nat_gateway.this.id}"
       }
     },
@@ -11,6 +12,7 @@ locals {
   route_table_routes_public = merge(
     {
       "igw" = {
+        "cidr_block" = "0.0.0.0/0"
         "gateway_id" = "${aws_internet_gateway.this.id}"
       }
     },
@@ -145,7 +147,7 @@ resource "aws_route_table" "public" {
   dynamic "route" {
     for_each = local.route_table_routes_public
     content {
-      cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
+      cidr_block = lookup(route.value, "cidr_block", null)
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)
@@ -174,7 +176,7 @@ resource "aws_route_table" "private" {
   dynamic "route" {
     for_each = local.route_table_routes_private
     content {
-      cidr_block = try(route.value.cidr_block, "0.0.0.0/0")
+      cidr_block = lookup(route.value, "cidr_block", null)
 
       egress_only_gateway_id    = lookup(route.value, "egress_only_gateway_id", null)
       gateway_id                = lookup(route.value, "gateway_id", null)

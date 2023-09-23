@@ -1,4 +1,25 @@
 ### SEGURITY_GROUP
+locals {
+  rules_security_group = merge(
+    {
+      engress_rule = {
+        from_port   = 0
+        to_port     = 0
+        protocol    = -1
+        type        = "egress"
+        cidr_blocks = ["0.0.0.0/0"]
+      },
+      ingress_rule = {
+        from_port = 0
+        to_port   = 0
+        protocol  = -1
+        type      = "ingress"
+        self      = true
+      }
+    },
+    var.rules_security_group,
+  )
+}
 
 resource "aws_security_group" "this" {
   name        = format("%s-%s-sg", var.sgname, var.environment)
@@ -15,40 +36,20 @@ resource "aws_security_group" "this" {
   )
 }
 
-resource "aws_security_group_rule" "with_source_security_group" {
-  type                     = "ingress"
-  for_each                 = var.ingress_with_source_security_group
+resource "aws_security_group_rule" "this" {
+
+  for_each                 = local.rules_security_group
   from_port                = each.value.from_port
   to_port                  = each.value.to_port
   protocol                 = each.value.protocol
+  type                     = each.value.type
   security_group_id        = aws_security_group.this.id
-  source_security_group_id = var.source_security_group_id
+  cidr_blocks              = lookup(each.value, "cidr_blocks", null)
+  description              = lookup(each.value, "description", null)
+  self                     = lookup(each.value, "self", null)
+  source_security_group_id = lookup(each.value, "source_security_group_id", null)
 
   lifecycle {
     create_before_destroy = true
   }
-}
-
-resource "aws_security_group_rule" "ingress_rule" {
-  type              = "ingress"
-  for_each          = var.ingress_with_cidr_blocks
-  from_port         = each.value.from_port
-  to_port           = each.value.to_port
-  protocol          = each.value.protocol
-  cidr_blocks       = each.value.cidr_blocks
-  security_group_id = aws_security_group.this.id
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_security_group_rule" "egress_rule" {
-  type              = "egress"
-  for_each          = var.egress
-  from_port         = each.value["from_port"]
-  to_port           = each.value["to_port"]
-  protocol          = each.value["protocol"]
-  cidr_blocks       = each.value["cidr_blocks"]
-  security_group_id = aws_security_group.this.id
 }

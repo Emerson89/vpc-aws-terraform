@@ -4,12 +4,6 @@ variable "sgname" {
   type        = string
 }
 
-variable "source_security_group_id" {
-  description = "Source security-group id"
-  type        = string
-  default     = ""
-}
-
 variable "vpc_id" {
   description = "VPC id"
   type        = string
@@ -27,28 +21,10 @@ variable "environment" {
   default     = null
 }
 
-variable "ingress_with_cidr_blocks" {
-  description = "Ingress rules security group"
-  type        = map(any)
+variable "rules_security_group" {
+  description = "Rules security group"
+  type        = any
   default     = {}
-}
-
-variable "ingress_with_source_security_group" {
-  description = "Ingress rules security group"
-  type        = map(any)
-  default     = {}
-}
-
-variable "egress" {
-  type = map(any)
-  default = {
-    "engress_rule" = {
-      "from_port"   = "0"
-      "to_port"     = "0"
-      "protocol"    = "-1"
-      "cidr_blocks" = ["0.0.0.0/0"]
-    }
-  }
 }
 
 variable "tags" {

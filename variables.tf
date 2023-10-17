@@ -13,6 +13,11 @@ variable "AWS_SESSION_TOKEN" {
   default = ""
 }
 
+variable "region" {
+  type    = string
+  default = ""
+}
+
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string

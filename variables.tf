@@ -1,23 +1,3 @@
-variable "AWS_ACCESS_KEY_ID" {
-  type    = string
-  default = ""
-}
-
-variable "AWS_SECRET_ACCESS_KEY" {
-  type    = string
-  default = ""
-}
-
-variable "AWS_SESSION_TOKEN" {
-  type    = string
-  default = ""
-}
-
-variable "region" {
-  type    = string
-  default = ""
-}
-
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string

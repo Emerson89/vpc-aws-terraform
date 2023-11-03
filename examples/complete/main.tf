@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.0"
+  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.1"
 
   name                 = "my-vpc"
   cidr_block           = "10.0.0.0/16"
@@ -28,20 +28,4 @@ module "vpc" {
   igwname = "my-igw"
   natname = "my-nat"
   rtname  = "my-rt"
-
-  route_table_routes_private = {
-    ## add block to create route in subnet-public
-    "peer" = {
-      "cidr_block"                = "10.10.0.0/16"
-      "vpc_peering_connection_id" = "pcx-xxxxxxxxxxxxx"
-    }
-  }
-  route_table_routes_public = {
-    ## add block to create route in subnet-private
-    "peer" = {
-      "cidr_block"                = "10.10.0.0/16"
-      "vpc_peering_connection_id" = "pxc-xxxxxxxxxxxxxxx"
-    }
-
-  }
 }

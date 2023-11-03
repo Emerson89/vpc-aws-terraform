@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.0"
+  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.1"
 
   name                 = "my-vpc"
   cidr_block           = "10.0.0.0/16"

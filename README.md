@@ -11,11 +11,24 @@
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.9 |
 
+## Requirements
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.9 |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.9 |
+
 ## Usage
 
 ```hcl
 module "vpc" {
-  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.0"
+  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v1.0.1"
 
   name                 = "my-vpc"
   cidr_block           = "10.0.0.0/16"
@@ -89,23 +102,25 @@ More in examples
 |------|-------------|------|---------|:--------:|
 | <a name="input_cidr_block"></a> [cidr\_block](#input\_cidr\_block) | The IPv4 CIDR block for the VPC. | `string` | n/a | yes |
 | <a name="input_create_aws_flow_log"></a> [create\_aws\_flow\_log](#input\_create\_aws\_flow\_log) | Create vpc flow log | `bool` | `false` | no |
+| <a name="input_create_igw"></a> [create\_igw](#input\_create\_igw) | Create igw-gateway | `bool` | `true` | no |
+| <a name="input_create_nat"></a> [create\_nat](#input\_create\_nat) | Create nat-gateway | `bool` | `true` | no |
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | Enable dns hostnames | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | Enable dns support | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Env tags | `string` | `null` | no |
 | <a name="input_iam_role_arn"></a> [iam\_role\_arn](#input\_iam\_role\_arn) | IAM role flow logs | `string` | `null` | no |
-| <a name="input_igwname"></a> [igwname](#input\_igwname) | Name to be used the resources as identifier | `string` | n/a | yes |
+| <a name="input_igwname"></a> [igwname](#input\_igwname) | Name to be used the resources as identifier | `string` | `""` | no |
 | <a name="input_instance_tenancy"></a> [instance\_tenancy](#input\_instance\_tenancy) | A tenancy option for instances launched into the VPC. Default is default | `string` | `"default"` | no |
 | <a name="input_log_destination_arn"></a> [log\_destination\_arn](#input\_log\_destination\_arn) | ARN log\_destination\_arn | `string` | `null` | no |
 | <a name="input_map_public_ip_on_launch"></a> [map\_public\_ip\_on\_launch](#input\_map\_public\_ip\_on\_launch) | Should be false if you do not want to auto-assign public IP on launch | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name to be used on all the resources as identifier | `string` | n/a | yes |
-| <a name="input_natname"></a> [natname](#input\_natname) | Name to be used the resources as identifier | `string` | n/a | yes |
+| <a name="input_natname"></a> [natname](#input\_natname) | Name to be used the resources as identifier | `string` | `""` | no |
 | <a name="input_private_subnets"></a> [private\_subnets](#input\_private\_subnets) | A list of private subnets inside the VPC | `list(string)` | `[]` | no |
 | <a name="input_private_subnets_tags"></a> [private\_subnets\_tags](#input\_private\_subnets\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 | <a name="input_public_subnets"></a> [public\_subnets](#input\_public\_subnets) | A list of public subnets inside the VPC | `list(string)` | `[]` | no |
 | <a name="input_public_subnets_tags"></a> [public\_subnets\_tags](#input\_public\_subnets\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 | <a name="input_route_table_routes_private"></a> [route\_table\_routes\_private](#input\_route\_table\_routes\_private) | n/a | `map(any)` | `{}` | no |
 | <a name="input_route_table_routes_public"></a> [route\_table\_routes\_public](#input\_route\_table\_routes\_public) | n/a | `map(any)` | `{}` | no |
-| <a name="input_rtname"></a> [rtname](#input\_rtname) | Name to be used the resources as identifier | `string` | n/a | yes |
+| <a name="input_rtname"></a> [rtname](#input\_rtname) | Name to be used the resources as identifier | `string` | `"rt"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 
 ## Outputs

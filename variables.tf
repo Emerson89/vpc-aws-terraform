@@ -4,7 +4,7 @@ variable "name" {
 }
 
 variable "cidr_block" {
-  description = " The IPv4 CIDR block for the VPC."
+  description = "The IPv4 CIDR block for the VPC."
   type        = string
 }
 
@@ -14,17 +14,30 @@ variable "create_aws_flow_log" {
   default     = false
 }
 
+variable "create_nat" {
+  description = "Create nat-gateway"
+  type        = bool
+  default     = true
+}
+
+variable "create_igw" {
+  description = "Create igw-gateway"
+  type        = bool
+  default     = true
+}
 #variables igw
 
 variable "igwname" {
   description = "Name to be used the resources as identifier"
   type        = string
+  default     = ""
 }
 
 #variables nat
 variable "natname" {
   description = "Name to be used the resources as identifier"
   type        = string
+  default     = ""
 
 }
 
@@ -32,6 +45,7 @@ variable "natname" {
 variable "rtname" {
   description = "Name to be used the resources as identifier"
   type        = string
+  default     = "rt"
 
 }
 

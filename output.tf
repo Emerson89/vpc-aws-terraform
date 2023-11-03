@@ -36,10 +36,10 @@ output "vpc_cidr" {
 
 output "igw" {
   description = "Output vpc cidr"
-  value       = aws_internet_gateway.this.id
+  value       = try(aws_internet_gateway.this[0].id, "")
 }
 
 output "nat" {
   description = "Output vpc cidr"
-  value       = aws_nat_gateway.this.id
+  value       = try(aws_nat_gateway.this[0].id, "")
 }

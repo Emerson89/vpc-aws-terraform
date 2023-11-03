@@ -1,26 +1,25 @@
 locals {
 
   route_table_routes_private = merge(
-    {
+    var.create_nat ? {
       "nat" = {
         "cidr_block"     = "0.0.0.0/0"
-        "nat_gateway_id" = "${aws_nat_gateway.this.id}"
+        "nat_gateway_id" = "${aws_nat_gateway.this[0].id}"
       }
-    },
+    } : {},
   var.route_table_routes_private)
 
   route_table_routes_public = merge(
-    {
+    var.create_igw ? {
       "igw" = {
         "cidr_block" = "0.0.0.0/0"
-        "gateway_id" = "${aws_internet_gateway.this.id}"
+        "gateway_id" = "${aws_internet_gateway.this[0].id}"
       }
-    },
+    } : {},
   var.route_table_routes_public)
 }
 
 resource "aws_vpc" "this" {
-
   cidr_block           = var.cidr_block
   instance_tenancy     = var.instance_tenancy
   enable_dns_support   = var.enable_dns_support
@@ -93,6 +92,8 @@ resource "aws_subnet" "public" {
 
 ## IGW
 resource "aws_internet_gateway" "this" {
+  count = var.create_igw ? 1 : 0
+
   vpc_id = aws_vpc.this.id
 
   tags = merge(
@@ -109,6 +110,8 @@ resource "aws_internet_gateway" "this" {
 ### NAT
 
 resource "aws_eip" "this" {
+  count = var.create_nat ? 1 : 0
+
   domain = "vpc"
 
   tags = merge(
@@ -123,7 +126,9 @@ resource "aws_eip" "this" {
 }
 
 resource "aws_nat_gateway" "this" {
-  allocation_id     = aws_eip.this.id
+  count = var.create_nat ? 1 : 0
+
+  allocation_id     = aws_eip.this[0].id
   subnet_id         = aws_subnet.public[0].id
   connectivity_type = "public"
 
@@ -136,7 +141,7 @@ resource "aws_nat_gateway" "this" {
     var.tags,
   )
 
-  depends_on = [aws_internet_gateway.this]
+  depends_on = [aws_internet_gateway.this[0]]
 }
 
 ## ROUTES

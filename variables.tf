@@ -38,7 +38,6 @@ variable "natname" {
   description = "Name to be used the resources as identifier"
   type        = string
   default     = ""
-
 }
 
 ## routes
@@ -46,19 +45,18 @@ variable "rtname" {
   description = "Name to be used the resources as identifier"
   type        = string
   default     = "rt"
-
 }
 
 variable "route_table_routes_private" {
-  type    = map(any)
-  default = {}
-
+  description = "additional routes tables privates"
+  type        = map(any)
+  default     = {}
 }
 
 variable "route_table_routes_public" {
-  type    = map(any)
-  default = {}
-
+  description = "additional routes tables public"
+  type        = map(any)
+  default     = {}
 }
 
 variable "public_subnets_tags" {
@@ -73,16 +71,10 @@ variable "private_subnets_tags" {
   default     = {}
 }
 
-variable "iam_role_arn" {
-  description = "IAM role flow logs"
+variable "traffic_type" {
+  description = "The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL"
   type        = string
-  default     = null
-}
-
-variable "log_destination_arn" {
-  description = "ARN log_destination_arn"
-  type        = string
-  default     = null
+  default     = "ALL"
 }
 
 variable "instance_tenancy" {

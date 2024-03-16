@@ -11,19 +11,6 @@
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.9 |
 
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2.9 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.9 |
-
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.9 |
-
 ## Usage
 
 ```hcl
@@ -35,6 +22,7 @@ module "vpc" {
   instance_tenancy     = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
+  create_aws_flow_log  = true
 
   tags        = {
     Environment = "hml
@@ -54,6 +42,9 @@ module "vpc" {
     "kubernetes.io/cluster/develop" = "shared",
     "kubernetes.io/role/elb"        = 1
   }
+  
+  create_nat = true
+  create_igw = true
 
   igwname = "my-igw"
   natname = "my-nat"
@@ -76,15 +67,18 @@ module "vpc" {
   }
 }
 ```
-
+#
 More in examples
-
+#
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_cloudwatch_log_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_eip.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_flow_log.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/flow_log) | resource |
+| [aws_iam_role.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
 | [aws_internet_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway) | resource |
 | [aws_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
 | [aws_route_table.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
@@ -95,6 +89,8 @@ More in examples
 | [aws_subnet.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
 | [aws_availability_zones.azs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
+| [aws_iam_policy_document.assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -107,10 +103,8 @@ More in examples
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | Enable dns hostnames | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | Enable dns support | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Env tags | `string` | `null` | no |
-| <a name="input_iam_role_arn"></a> [iam\_role\_arn](#input\_iam\_role\_arn) | IAM role flow logs | `string` | `null` | no |
 | <a name="input_igwname"></a> [igwname](#input\_igwname) | Name to be used the resources as identifier | `string` | `""` | no |
 | <a name="input_instance_tenancy"></a> [instance\_tenancy](#input\_instance\_tenancy) | A tenancy option for instances launched into the VPC. Default is default | `string` | `"default"` | no |
-| <a name="input_log_destination_arn"></a> [log\_destination\_arn](#input\_log\_destination\_arn) | ARN log\_destination\_arn | `string` | `null` | no |
 | <a name="input_map_public_ip_on_launch"></a> [map\_public\_ip\_on\_launch](#input\_map\_public\_ip\_on\_launch) | Should be false if you do not want to auto-assign public IP on launch | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name to be used on all the resources as identifier | `string` | n/a | yes |
 | <a name="input_natname"></a> [natname](#input\_natname) | Name to be used the resources as identifier | `string` | `""` | no |
@@ -118,10 +112,11 @@ More in examples
 | <a name="input_private_subnets_tags"></a> [private\_subnets\_tags](#input\_private\_subnets\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 | <a name="input_public_subnets"></a> [public\_subnets](#input\_public\_subnets) | A list of public subnets inside the VPC | `list(string)` | `[]` | no |
 | <a name="input_public_subnets_tags"></a> [public\_subnets\_tags](#input\_public\_subnets\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
-| <a name="input_route_table_routes_private"></a> [route\_table\_routes\_private](#input\_route\_table\_routes\_private) | n/a | `map(any)` | `{}` | no |
-| <a name="input_route_table_routes_public"></a> [route\_table\_routes\_public](#input\_route\_table\_routes\_public) | n/a | `map(any)` | `{}` | no |
+| <a name="input_route_table_routes_private"></a> [route\_table\_routes\_private](#input\_route\_table\_routes\_private) | additional routes tables privates | `map(any)` | `{}` | no |
+| <a name="input_route_table_routes_public"></a> [route\_table\_routes\_public](#input\_route\_table\_routes\_public) | additional routes tables public | `map(any)` | `{}` | no |
 | <a name="input_rtname"></a> [rtname](#input\_rtname) | Name to be used the resources as identifier | `string` | `"rt"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
+| <a name="input_traffic_type"></a> [traffic\_type](#input\_traffic\_type) | The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL | `string` | `"ALL"` | no |
 
 ## Outputs
 

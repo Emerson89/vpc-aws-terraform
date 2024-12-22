@@ -12,3 +12,5 @@ output "vpc_id" {
   description = "Output vpc id"
   value       = module.vpc.*.vpc_id
 }
+
+

@@ -30,14 +30,14 @@ variable "create_igw" {
 variable "igwname" {
   description = "Name to be used the resources as identifier"
   type        = string
-  default     = ""
+  default     = "igw"
 }
 
 #variables nat
 variable "natname" {
   description = "Name to be used the resources as identifier"
   type        = string
-  default     = ""
+  default     = "nat"
 }
 
 ## routes
@@ -47,18 +47,6 @@ variable "rtname" {
   default     = "rt"
 }
 
-variable "route_table_routes_private" {
-  description = "additional routes tables privates"
-  type        = map(any)
-  default     = {}
-}
-
-variable "route_table_routes_public" {
-  description = "additional routes tables public"
-  type        = map(any)
-  default     = {}
-}
-
 variable "public_subnets_tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(any)
@@ -66,6 +54,12 @@ variable "public_subnets_tags" {
 }
 
 variable "private_subnets_tags" {
+  description = "A mapping of tags to assign to the resource"
+  type        = map(any)
+  default     = {}
+}
+
+variable "additional_subnets_tags" {
   description = "A mapping of tags to assign to the resource"
   type        = map(any)
   default     = {}
@@ -84,9 +78,9 @@ variable "instance_tenancy" {
 }
 
 variable "environment" {
-  description = "Env tags"
+  description = "Env resources"
   type        = string
-  default     = null
+  default     = "hmg"
 }
 
 variable "public_subnets" {
@@ -96,6 +90,12 @@ variable "public_subnets" {
 }
 
 variable "private_subnets" {
+  description = "A list of private subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "additional_subnets" {
   description = "A list of private subnets inside the VPC"
   type        = list(string)
   default     = []
@@ -123,4 +123,94 @@ variable "enable_dns_support" {
   description = "Enable dns support"
   type        = bool
   default     = true
+}
+
+variable "enable_ipv6" {
+  description = "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block"
+  type        = bool
+  default     = false
+}
+
+variable "public_subnet_ipv6_prefix" {
+  description = "Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnet_ipv6_prefix" {
+  description = "Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+  type        = list(string)
+  default     = []
+}
+
+variable "additional_subnet_ipv6_prefix" {
+  description = "Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+  type        = list(string)
+  default     = []
+}
+
+variable "assign_generated_ipv6_cidr_block" {
+  description = " Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false"
+  type        = bool
+  default     = false
+}
+
+variable "create_route_additional" {
+  description = "Boolean to create add routes"
+  type        = bool
+  default     = false
+}
+
+variable "create_route_private" {
+  description = "Boolean to create private routes"
+  type        = bool
+  default     = false
+}
+
+variable "create_route_public" {
+  description = "Boolean to create public routes"
+  type        = bool
+  default     = false
+}
+
+variable "routes_private" {
+  description = "Map of private routes"
+  type        = map(any)
+  default     = {}
+}
+
+variable "routes_public" {
+  description = "Map of public routes"
+  type        = map(any)
+  default     = {}
+}
+
+variable "routes_add" {
+  description = "Map of additional routes"
+  type        = map(any)
+  default     = {}
+}
+
+variable "newbits" {
+  description = "Is the number of additional bits with which to extend the prefix. For example, if given a prefix ending in /16 and a newbits value of 4, the resulting subnet address will have length /20"
+  type        = number
+  default     = 4
+}
+
+variable "route_igw_additional" {
+  description = "Routes igw subnets additional"
+  type        = bool
+  default     = false
+}
+
+variable "route_nat_additional" {
+  description = "Routes nat subnets additional"
+  type        = bool
+  default     = false
+}
+
+variable "create_additional_subnet_ipv6" {
+  description = "Create subnet additional ipv6"
+  type        = bool
+  default     = false
 }

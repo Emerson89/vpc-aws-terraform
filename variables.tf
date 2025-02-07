@@ -1,11 +1,13 @@
 variable "name" {
   description = "Name to be used on all the resources as identifier"
   type        = string
+  default     = ""
 }
 
 variable "cidr_block" {
   description = "The IPv4 CIDR block for the VPC."
   type        = string
+  default     = ""
 }
 
 variable "create_aws_flow_log" {
@@ -213,4 +215,16 @@ variable "create_additional_subnet_ipv6" {
   description = "Create subnet additional ipv6"
   type        = bool
   default     = false
+}
+
+variable "create_vpc" {
+  description = "Create vpc"
+  type        = bool
+  default     = true
+}
+
+variable "vpc_id" {
+  description = "Name to be used on all the resources as identifier"
+  type        = string
+  default     = ""
 }

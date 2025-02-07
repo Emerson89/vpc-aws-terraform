@@ -11,18 +11,17 @@
 |------|---------|
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.9 |
 
-## Usage
+## Modules
 
 ```hcl
 module "vpc" {
-  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v2.0.0"
+  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v2.1.0"
 
   name                 = "my-vpc"
-  cidr_block           = "10.30.0.0/16"
+  cidr_block           = "172.31.0.0/16"
   instance_tenancy     = "default"
   enable_dns_support   = true
   enable_dns_hostnames = true
-
   create_aws_flow_log  = true
 
   tags = {
@@ -30,53 +29,21 @@ module "vpc" {
   }
   environment = "hml"
 
-  ## if a prefix ending in /16 and a newbit value of 4 is provided, the resulting subnet address will have length /20 (default is 4) that enables 4094 hosts and 16 subnets
-  newbits = 4
-  ## Sequence of subnets by zones starting with 0 = us-east-1a, 1 = us-east-1b..., respecting the sequence to not underlay the nets
-  private_subnets      = [0, 1, 2]
-  public_subnets       = [3, 4, 5]
-  additional_subnets   = [6, 7, 8]
-  route_nat_additional = true
-
-  enable_ipv6                      = true
-  assign_generated_ipv6_cidr_block = true
-  public_subnet_ipv6_prefix        = [0, 1, 2]
-  private_subnet_ipv6_prefix       = [3, 4, 5]
-  additional_subnet_ipv6_prefix    = [6, 7, 8]
-
   private_subnets_tags = {
     "kubernetes.io/cluster/develop"   = "shared",
     "kubernetes.io/role/internal-elb" = 1
   }
-  
-  public_subnets_tags  = {
+  public_subnets_tags = {
     "kubernetes.io/cluster/develop" = "shared",
     "kubernetes.io/role/elb"        = 1
   }
 
-  create_route_private = true
-  routes_private = {
-    private_route1 = {
-      destination_cidr_block    = "172.31.0.0/16"
-      vpc_peering_connection_id = "pcx-xxxxxxxxxxx"
-    }
-  }
+  private_subnets = ["172.31.0.0/20", "172.31.16.0/20", "172.31.32.0/20"]
+  public_subnets  = ["172.31.48.0/20", "172.31.64.0/20", "172.31.80.0/20"]
+  #additional_subnets   = ["172.31.144.0/20", "172.31.160.0/20", "172.31.176.0/20"]
+  #route_nat_additional = true
 
-  create_route_public = true
-  routes_public = {
-    public_route1 = {
-      destination_cidr_block    = "172.31.0.0/16"
-      vpc_peering_connection_id = "pcx-xxxxxxxxxxx"
-    }
-  }
-
-  create_route_additional = true
-  routes_add = {
-    add_route1 = {
-      destination_cidr_block    = "172.31.0.0/16"
-      vpc_peering_connection_id = "pcx-xxxxxxxxxxx"
-    }
-  }
+  map_public_ip_on_launch = true
 
   create_nat = true
   create_igw = true
@@ -84,43 +51,6 @@ module "vpc" {
   igwname = "my-igw"
   natname = "my-nat"
   rtname  = "my-rt"
-}
-```
-#
-
-- IPV6
-
-```hcl
-module "vpc" {
-  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v2.0.0"
-
-  name                 = "my-vpc"
-  cidr_block           = "10.30.0.0/16"
-  instance_tenancy     = "default"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  create_aws_flow_log = true
-
-  tags = {
-    Environment = "hml"
-  }
-  environment = "hml"
-
-  ## if a prefix ending in /16 and a newbit value of 4 is provided, the resulting subnet address will have length /20 (default is 4) that enables 4094 hosts and 16 subnets
-  newbits = 4
-  ## Sequence of subnets by zones starting with 0 = us-east-1a, 1 = us-east-1b..., respecting the sequence to not underlay the nets
-  private_subnets      = [0, 1, 2]
-  public_subnets       = [3, 4, 5]
-  additional_subnets   = [6, 7, 8]
-  route_nat_additional = true
-
-  enable_ipv6                      = true
-  assign_generated_ipv6_cidr_block = true
-  public_subnet_ipv6_prefix        = [0, 1, 2]
-  private_subnet_ipv6_prefix       = [3, 4, 5]
-  create_additional_subnet_ipv6    = true
-  additional_subnet_ipv6_prefix    = [6, 7, 8]
 
   create_route_private = false
   routes_private = {
@@ -145,19 +75,45 @@ module "vpc" {
       vpc_peering_connection_id = "pcx-xxxxxxxxxxx"
     }
   }
-
-  create_nat = true
-  create_igw = true
-
-  igwname = "my-igw"
-  natname = "my-nat"
-  rtname  = "my-rt"
 }
 ```
 
-#
-More in examples
-#
+- Only Subnets
+
+```hcl
+module "vpc" {
+  source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v2.1.0"
+
+  create_vpc = false
+  create_nat = false
+  create_igw = false
+
+  vpc_id = "vpc-abcabcdbacb"
+
+  tags = {
+    Environment = "hml"
+  }
+  environment = "hml"
+
+  private_subnets_tags = {
+    "kubernetes.io/cluster/develop"   = "shared",
+    "kubernetes.io/role/internal-elb" = 1
+  }
+  public_subnets_tags = {
+    "kubernetes.io/cluster/develop" = "shared",
+    "kubernetes.io/role/elb"        = 1
+  }
+
+  private_subnets = ["172.31.96.0/20", "172.31.112.0/20", "172.31.128.0/20"]
+  public_subnets  = ["172.31.144.0/20", "172.31.160.0/20", "172.31.176.0/20"]
+
+  map_public_ip_on_launch = true
+
+  rtname = "my-rt"
+}
+```
+
+**More examples/**
 
 ## Resources
 
@@ -192,6 +148,9 @@ More in examples
 | [aws_availability_zones.azs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_iam_policy_document.assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_internet_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/internet_gateway) | data source |
+| [aws_nat_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/nat_gateway) | data source |
+| [aws_vpc.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc) | data source |
 
 ## Inputs
 
@@ -201,7 +160,7 @@ More in examples
 | <a name="input_additional_subnets"></a> [additional\_subnets](#input\_additional\_subnets) | A list of private subnets inside the VPC | `list(string)` | `[]` | no |
 | <a name="input_additional_subnets_tags"></a> [additional\_subnets\_tags](#input\_additional\_subnets\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block. Default is false | `bool` | `false` | no |
-| <a name="input_cidr_block"></a> [cidr\_block](#input\_cidr\_block) | The IPv4 CIDR block for the VPC. | `string` | n/a | yes |
+| <a name="input_cidr_block"></a> [cidr\_block](#input\_cidr\_block) | The IPv4 CIDR block for the VPC. | `string` | `""` | no |
 | <a name="input_create_additional_subnet_ipv6"></a> [create\_additional\_subnet\_ipv6](#input\_create\_additional\_subnet\_ipv6) | Create subnet additional ipv6 | `bool` | `false` | no |
 | <a name="input_create_aws_flow_log"></a> [create\_aws\_flow\_log](#input\_create\_aws\_flow\_log) | Create vpc flow log | `bool` | `false` | no |
 | <a name="input_create_igw"></a> [create\_igw](#input\_create\_igw) | Create igw-gateway | `bool` | `true` | no |
@@ -209,6 +168,7 @@ More in examples
 | <a name="input_create_route_additional"></a> [create\_route\_additional](#input\_create\_route\_additional) | Boolean to create add routes | `bool` | `false` | no |
 | <a name="input_create_route_private"></a> [create\_route\_private](#input\_create\_route\_private) | Boolean to create private routes | `bool` | `false` | no |
 | <a name="input_create_route_public"></a> [create\_route\_public](#input\_create\_route\_public) | Boolean to create public routes | `bool` | `false` | no |
+| <a name="input_create_vpc"></a> [create\_vpc](#input\_create\_vpc) | Create vpc | `bool` | `true` | no |
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | Enable dns hostnames | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | Enable dns support | `bool` | `true` | no |
 | <a name="input_enable_ipv6"></a> [enable\_ipv6](#input\_enable\_ipv6) | Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block | `bool` | `false` | no |
@@ -216,7 +176,7 @@ More in examples
 | <a name="input_igwname"></a> [igwname](#input\_igwname) | Name to be used the resources as identifier | `string` | `"igw"` | no |
 | <a name="input_instance_tenancy"></a> [instance\_tenancy](#input\_instance\_tenancy) | A tenancy option for instances launched into the VPC. Default is default | `string` | `"default"` | no |
 | <a name="input_map_public_ip_on_launch"></a> [map\_public\_ip\_on\_launch](#input\_map\_public\_ip\_on\_launch) | Should be false if you do not want to auto-assign public IP on launch | `bool` | `true` | no |
-| <a name="input_name"></a> [name](#input\_name) | Name to be used on all the resources as identifier | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name to be used on all the resources as identifier | `string` | `""` | no |
 | <a name="input_natname"></a> [natname](#input\_natname) | Name to be used the resources as identifier | `string` | `"nat"` | no |
 | <a name="input_newbits"></a> [newbits](#input\_newbits) | Is the number of additional bits with which to extend the prefix. For example, if given a prefix ending in /16 and a newbits value of 4, the resulting subnet address will have length /20 | `number` | `4` | no |
 | <a name="input_private_subnet_ipv6_prefix"></a> [private\_subnet\_ipv6\_prefix](#input\_private\_subnet\_ipv6\_prefix) | Assigns IPv6 public subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list | `list(string)` | `[]` | no |
@@ -233,6 +193,7 @@ More in examples
 | <a name="input_rtname"></a> [rtname](#input\_rtname) | Name to be used the resources as identifier | `string` | `"rt"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(any)` | `{}` | no |
 | <a name="input_traffic_type"></a> [traffic\_type](#input\_traffic\_type) | The type of traffic to capture. Valid values: ACCEPT,REJECT, ALL | `string` | `"ALL"` | no |
+| <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | Name to be used on all the resources as identifier | `string` | `""` | no |
 
 ## Outputs
 

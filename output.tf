@@ -30,17 +30,17 @@ output "additional_cidrs" {
 
 output "vpc_id" {
   description = "Output vpc id"
-  value       = aws_vpc.this.id
+  value       = try(aws_vpc.this[0].id, "")
 }
 
 output "vpc_name" {
   description = "Output vpc name"
-  value       = aws_vpc.this.tags.Name
+  value       = try(aws_vpc.this[0].tags.Name, "")
 }
 
 output "vpc_cidr" {
   description = "Output vpc cidr"
-  value       = aws_vpc.this.cidr_block
+  value       = try(aws_vpc.this[0].cidr_block, "")
 }
 
 output "igw" {
@@ -55,7 +55,7 @@ output "nat" {
 
 output "vpc_ipv6_cidr_block" {
   description = "The IPv6 CIDR block"
-  value       = try(aws_vpc.this.ipv6_cidr_block, null)
+  value       = try(aws_vpc.this[0].ipv6_cidr_block, null)
 }
 
 output "private_ipv6_ids" {

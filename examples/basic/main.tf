@@ -2,7 +2,7 @@ module "vpc" {
   source = "github.com/Emerson89/vpc-aws-terraform.git?ref=v2.0.0"
 
   name       = "my-vpc"
-  cidr_block = "10.10.0.0/16"
+  cidr_block = "172.31.0.0/16"
 
   tags = {
     Environment = "hml"
@@ -12,7 +12,6 @@ module "vpc" {
   create_nat = false
   create_igw = false
 
-  ## Sequence of subnets by zones starting with 0 = us-east-1a, 1 = us-east-1b..., respecting the sequence to not underlay the nets
-  private_subnets = [0, 1, 2]
-  public_subnets  = [3, 4, 5]
+  private_subnets = ["172.31.0.0/20", "172.31.16.0/20", "172.31.32.0/20"]
+  public_subnets  = ["172.31.48.0/20", "172.31.64.0/20", "172.31.80.0/20"]
 }

@@ -78,7 +78,7 @@ module "vpc" {
 }
 ```
 
-- Only Subnets
+- Only Subnets networks cannot overlap
 
 ```hcl
 module "vpc" {

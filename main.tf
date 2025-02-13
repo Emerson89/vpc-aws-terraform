@@ -180,8 +180,6 @@ resource "aws_subnet" "additional" {
 ## Routes public
 
 resource "aws_route" "public_internet_gateway" {
-  count = var.create_igw ? 1 : 0
-
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = var.create_igw ? aws_internet_gateway.this[0].id : data.aws_internet_gateway.this[0].id
@@ -192,7 +190,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_route" "public_internet_gateway_ipv6" {
-  count = var.create_igw && var.enable_ipv6 ? 1 : 0
+  count = var.enable_ipv6 ? 1 : 0
 
   route_table_id              = aws_route_table.public.id
   destination_ipv6_cidr_block = "::/0"
@@ -203,15 +201,13 @@ resource "aws_route" "public_internet_gateway_ipv6" {
 ## Routes private
 
 resource "aws_route" "private_nat" {
-  count = var.create_nat ? 1 : 0
-
   route_table_id         = aws_route_table.private.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = var.create_nat ? aws_nat_gateway.this[0].id : data.aws_nat_gateway.this[0].id
 }
 
 resource "aws_route" "private_nat_ipv6" {
-  count = var.create_nat && var.enable_ipv6 ? 1 : 0
+  count = var.enable_ipv6 ? 1 : 0
 
   route_table_id              = aws_route_table.private.id
   destination_ipv6_cidr_block = "64:ff9b::/96"
@@ -234,7 +230,7 @@ resource "aws_route" "dynamic" {
 }
 
 resource "aws_route" "additional_nat" {
-  count = var.create_nat && var.route_nat_additional ? 1 : 0
+  count = var.route_nat_additional ? 1 : 0
 
   route_table_id         = aws_route_table.additional.id
   destination_cidr_block = "0.0.0.0/0"
@@ -243,7 +239,7 @@ resource "aws_route" "additional_nat" {
 }
 
 resource "aws_route" "additional_nat_ipv6" {
-  count = var.create_nat && var.enable_ipv6 && var.route_nat_additional ? 1 : 0
+  count = var.enable_ipv6 && var.route_nat_additional ? 1 : 0
 
   route_table_id              = aws_route_table.additional.id
   destination_ipv6_cidr_block = "64:ff9b::/96"
@@ -252,7 +248,7 @@ resource "aws_route" "additional_nat_ipv6" {
 }
 
 resource "aws_route" "additional_internet_gateway" {
-  count = var.create_igw && var.route_igw_additional ? 1 : 0
+  count = var.route_igw_additional ? 1 : 0
 
   route_table_id         = aws_route_table.additional.id
   destination_cidr_block = "0.0.0.0/0"
@@ -264,7 +260,7 @@ resource "aws_route" "additional_internet_gateway" {
 }
 
 resource "aws_route" "additional_internet_gateway_ipv6" {
-  count = var.create_igw && var.enable_ipv6 && var.route_igw_additional ? 1 : 0
+  count = var.enable_ipv6 && var.route_igw_additional ? 1 : 0
 
   route_table_id              = aws_route_table.additional.id
   destination_ipv6_cidr_block = "::/0"
